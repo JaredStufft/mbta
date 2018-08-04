@@ -3,6 +3,7 @@ import requests
 import time
 import json
 import os
+from mbta.response import MBTAPerformanceResponse
 
 
 class MBTAPerformance:
@@ -10,9 +11,40 @@ class MBTAPerformance:
     host = 'http://realtime.mbta.com/developer/api/v2.1'
     params = {'response_format': 'json'}
 
-    def __init__(self, api_key):
+    def __init__(self, api_key=None):
         
-        self.api_key = api_key
+        self.params['api_key'] = self.authorize_api(api_key)
+
+    @staticmethod
+    def authorize_api(api_key):
+
+        """ authorize_api
+
+        Checks if the user provided an API key during class instance
+        creation. If none found, searches for environment variable
+        `MBTA_PERFORMANCE_API_KEY`.
+
+        INPUTS
+
+        @api_key [str]: Key for MBTA Performance API, to be received
+        from the class instance created if used.
+
+
+        RETURNS
+
+        @valid_api_key [str]: The proper API key for the performance API.
+
+        """
+
+        if not api_key:
+
+            valid_api_key = os.getenv('MBTA_PERFORMANCE_API_KEY')
+
+            return valid_api_key
+
+        valid_api_key = api_key
+
+        return valid_api_key
 
     @staticmethod
     def _date_to_epoch(date):
@@ -110,7 +142,7 @@ class MBTAPerformance:
         
         return response
 
-    def get_travel_times(self, params):
+    def get_travel_times(self, from_datetime, to_datetime, from_stop, to_stop):
         
         """ get_travel_times
         
@@ -118,7 +150,13 @@ class MBTAPerformance:
         
         INPUTS
         
-        @params [dict]: Dictionary of API call parameters
+        @from_datetime [str]:
+
+        @to_datetime [str]:
+
+        @from_stop [str]:
+
+        @to_stop [str]:
         
         
         RETURNS
