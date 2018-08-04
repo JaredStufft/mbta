@@ -138,7 +138,7 @@ class MBTAPerformance:
         
         r = requests.get(call_url, params=call_params)
     
-        response = json.loads(r.content)  # TODO: Add in response class for easier parsing
+        response = MBTAPerformanceResponse(r.content)
         
         return response
 
@@ -161,13 +161,17 @@ class MBTAPerformance:
         
         RETURNS
         
-        @response
+        @response [MBTAPerformanceResponse]: Response from the travel times API endpoint
         
         """
+
+        params = {
+            'from_datetime': self._date_to_epoch(from_datetime),
+            'to_datetime': self._date_to_epoch(to_datetime),
+            'from_stop': from_stop,
+            'to_stop': to_stop
+        }
+
+        response = self._make_api_call('traveltimes', params=params)
         
-        # TODO: Add call to travel times library
-        
-        pass
-    
-    
-        
+        return response

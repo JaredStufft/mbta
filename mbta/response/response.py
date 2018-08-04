@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import json
+
 
 class Response:
 
@@ -11,12 +13,7 @@ class Response:
     
     def __init__(self, data):
         
-        pass
-
-    @property
-    def raw_data(self):
-        
-        return 'pass'
+        self.raw_data = json.loads(data)
 
     @property
     def dataframe(self):
