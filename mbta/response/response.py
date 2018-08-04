@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 class Response:
 
     """ Response
@@ -14,16 +13,16 @@ class Response:
         pass
 
     @property
-    def raw_data(self, data):
+    def raw_data(self):
         
         return 'pass'
 
     @property
-    def dataframe(self, data):
+    def dataframe(self):
         
         return 'pass'
 
-    def parse_response(self, data):
+    def parse_response(self):
         
         pass
     
@@ -38,4 +37,4 @@ class MBTAPerformanceResponse(Response):
     
     def __init__(self):
         
-        pass
+        super().__init__()
