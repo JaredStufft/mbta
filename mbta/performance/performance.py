@@ -9,13 +9,11 @@ class MBTAPerformance:
     
     host = 'http://realtime.mbta.com/developer/api/v2.1'
     params = {'response_format' : 'json'}
-    
-    
+
     def __init__(self, api_key):
         
         self.api_key = api_key
-        
-    
+
     @staticmethod
     def _date_to_epoch(date):
         
@@ -37,8 +35,7 @@ class MBTAPerformance:
         epoch = int(time.mktime(time.strptime(date), '%Y-%m-%d'))
         
         return epoch
-    
-    
+
     def _create_api_host_url(self, endpoint):
         
         """ _create_api_host_url
@@ -59,8 +56,7 @@ class MBTAPerformance:
         api_url = os.path.join(self.host, endpoint)
         
         return api_url
-    
-    
+
     @staticmethod
     def _merge_dicts(dict1, dict2):
         
@@ -84,8 +80,7 @@ class MBTAPerformance:
         merged = {**dict1, **dict2}
         
         return merged
-    
-    
+
     def _make_api_call(self, endpoint, params):
         
         """ _make_api_call
@@ -111,11 +106,10 @@ class MBTAPerformance:
         
         r = requests.get(call_url, params=call_params)
     
-        response = json.loads(r.content) #TODO: Add in response class for easier parsing
+        response = json.loads(r.content) # TODO: Add in response class for easier parsing
         
         return response
-    
-    
+
     def get_travel_times(self, params):
         
         """ get_travel_times
@@ -133,7 +127,7 @@ class MBTAPerformance:
         
         """
         
-        #TODO: Add call to travel times library
+        # TODO: Add call to travel times library
         
         pass
     
