@@ -8,7 +8,7 @@ import os
 class MBTAPerformance:
     
     host = 'http://realtime.mbta.com/developer/api/v2.1'
-    params = {'response_format' : 'json'}
+    params = {'response_format': 'json'}
 
     def __init__(self, api_key):
         
@@ -106,7 +106,7 @@ class MBTAPerformance:
         
         r = requests.get(call_url, params=call_params)
     
-        response = json.loads(r.content) # TODO: Add in response class for easier parsing
+        response = json.loads(r.content)  # TODO: Add in response class for easier parsing
         
         return response
 
