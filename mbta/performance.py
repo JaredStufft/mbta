@@ -64,7 +64,7 @@ class MBTAPerformance:
         
         """
         
-        epoch = int(time.mktime(time.strptime(date), '%Y-%m-%d'))
+        epoch = int(time.mktime(time.strptime(date, '%Y-%m-%d')))
         
         return epoch
 
