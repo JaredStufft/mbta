@@ -2,7 +2,7 @@
 import requests
 import time
 import os
-from mbta.response import MBTAPerformanceResponse
+import mbta.response
 
 
 class MBTAPerformance:
@@ -137,7 +137,7 @@ class MBTAPerformance:
         
         r = requests.get(call_url, params=call_params)
     
-        response = MBTAPerformanceResponse(r.content)
+        response = mbta.response.MBTAPerformanceResponse(r.content)
         
         return response
 
