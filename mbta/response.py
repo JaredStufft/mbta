@@ -11,9 +11,9 @@ class Response:
     
     """
     
-    def __init__(self, data):
+    def __init__(self, raw_response):
         
-        self.raw_data = json.loads(data)
+        self.raw_response = json.loads(raw_response)
 
     @property
     def dataframe(self):
@@ -33,6 +33,6 @@ class MBTAPerformanceResponse(Response):
     
     """
     
-    def __init__(self):
+    def __init__(self, raw_response):
         
-        super().__init__()
+        super().__init__(raw_response=raw_response)

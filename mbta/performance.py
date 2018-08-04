@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import requests
 import time
-import json
 import os
 from mbta.response import MBTAPerformanceResponse
 
@@ -9,7 +8,7 @@ from mbta.response import MBTAPerformanceResponse
 class MBTAPerformance:
     
     host = 'http://realtime.mbta.com/developer/api/v2.1'
-    params = {'response_format': 'json'}
+    params = {'format': 'json'}
 
     def __init__(self, api_key=None):
         
@@ -85,7 +84,7 @@ class MBTAPerformance:
         
         """
         
-        api_url = os.path.join(self.host, endpoint)
+        api_url = '/'.join((self.host, endpoint))
         
         return api_url
 
