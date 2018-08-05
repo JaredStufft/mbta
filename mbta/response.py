@@ -13,10 +13,11 @@ class Response:
     
     """
     
-    def __init__(self, raw_response):
+    def __init__(self, raw_response, status_code):
         
         self.raw_response = json.loads(raw_response)
         self.data_as_of = dt.datetime.now()
+        self.status_code = status_code
         self.columns = ()
 
     @staticmethod
@@ -107,7 +108,7 @@ class MBTAPerformanceResponse(Response):
     
     """
     
-    def __init__(self, raw_response):
+    def __init__(self, raw_response, status_code):
 
         self.data_type = 'Travel Times'
         self.columns = (
@@ -115,6 +116,6 @@ class MBTAPerformanceResponse(Response):
             'dept_dt', 'direction',
             'route_id', 'travel_time_sec'
         )
-        super().__init__(raw_response=raw_response)
+        super().__init__(raw_response=raw_response, status_code=status_code)
 
 

@@ -139,7 +139,7 @@ class MBTAPerformance:
 
         r.raise_for_status()  # HTTPError if 4XX or 5XX status code on response.
     
-        response = mbta.response.MBTAPerformanceResponse(r.content)
+        response = mbta.response.MBTAPerformanceResponse(r.content, r.status_code)
         
         return response
 
