@@ -2,7 +2,7 @@
 import requests
 import time
 import os
-from mbta.response import MBTAPerformanceResponse
+import mbta.response
 
 
 class MBTAPerformance:
@@ -136,8 +136,10 @@ class MBTAPerformance:
         call_url = self._create_api_host_url(endpoint)
         
         r = requests.get(call_url, params=call_params)
+
+        r.raise_for_status()  # HTTPError if 4XX or 5XX status code on response.
     
-        response = MBTAPerformanceResponse(r.content)
+        response = mbta.response.MBTAPerformanceResponse(r.content, r.status_code)
         
         return response
 
