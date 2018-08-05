@@ -17,6 +17,7 @@ class Response:
         
         self.raw_response = json.loads(raw_response)
         self.data_as_of = dt.datetime.now()
+        self.columns = ()
 
     @staticmethod
     def _strip_first_layer_of_dict(data):
@@ -52,7 +53,28 @@ class Response:
 
         """
 
-        return self._strip_first_layer_of_dict(self.raw_response)
+        data_list = self._strip_first_layer_of_dict(self.raw_response)
+
+        return data_list
+
+    @property
+    def tuples(self):
+        """ tuples
+
+        Data parsed into a list of tuples
+
+        """
+
+        tuples = []
+
+        for data_point in self.data_list:
+
+            # Sorts the each data point according to the column order in
+            # self.columns, converts first to a list, then a tuple for faster processing later.
+            tuple_ = tuple([value for key, value in sorted(data_point.items(), key=lambda i:self.columns.index(i[0]))])
+            tuples.append(tuple_)
+
+        return tuples
 
     @staticmethod
     def _epoch_to_datetime(epoch):
@@ -88,15 +110,11 @@ class MBTAPerformanceResponse(Response):
     def __init__(self, raw_response):
 
         self.data_type = 'Travel Times'
+        self.columns = (
+            'arr_dt', 'benchmark_travel_time_sec',
+            'dept_dt', 'direction',
+            'route_id', 'travel_time_sec'
+        )
         super().__init__(raw_response=raw_response)
 
-    @property
-    def tuples(self):
 
-        """ tuples
-
-        Data parsed into a list of tuples
-
-        """
-
-        return None
