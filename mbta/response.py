@@ -18,7 +18,8 @@ class Response:
         self.raw_response = json.loads(raw_response)
         self.data_as_of = dt.datetime.now()
         self.status_code = status_code
-        self.columns = ()
+        self.columns = {}
+        self._set_data_type_data_list()
 
     @staticmethod
     def _strip_first_layer_of_dict(data):
@@ -43,20 +44,22 @@ class Response:
 
         data_list = data[key]
 
-        return data_list
+        return data_list, key
 
-    @property
-    def data_list(self):
+    def _set_data_type_data_list(self):
 
-        """ data_list
+        """ _set_data_type_data_list
 
-        List of single-point dictionaries.
+        Sets the data type and data list based on the raw response key and contents.
 
         """
 
-        data_list = self._strip_first_layer_of_dict(self.raw_response)
+        data_list_, data_type_ = self._strip_first_layer_of_dict(self.raw_response)
 
-        return data_list
+        self.data_list = data_list_
+        self.data_type = data_type_
+
+        return
 
     @property
     def tuples(self):
@@ -72,7 +75,7 @@ class Response:
 
             # Sorts the each data point according to the column order in
             # self.columns, converts first to a list, then a tuple for faster processing later.
-            tuple_ = tuple([value for key, value in sorted(data_point.items(), key=lambda i:self.columns.index(i[0]))])
+            tuple_ = tuple([data_point[key] for key in self.columns[self.data_type]])
             tuples.append(tuple_)
 
         return tuples
@@ -95,7 +98,7 @@ class Response:
 
         """
 
-        date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(epoch))
+        date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(epoch)))
 
         return date
 
@@ -110,12 +113,15 @@ class MBTAPerformanceResponse(Response):
     
     def __init__(self, raw_response, status_code):
 
-        self.data_type = 'Travel Times'
-        self.columns = (
-            'arr_dt', 'benchmark_travel_time_sec',
-            'dept_dt', 'direction',
-            'route_id', 'travel_time_sec'
-        )
         super().__init__(raw_response=raw_response, status_code=status_code)
+
+        # In response type : (response columns) format
+        self.columns = {'travel_times': ('arr_dt', 'benchmark_travel_time_sec',
+                                         'dep_dt', 'direction',
+                                         'route_id', 'travel_time_sec'
+                                         )
+                        }
+
+
 
 
