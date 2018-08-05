@@ -136,6 +136,8 @@ class MBTAPerformance:
         call_url = self._create_api_host_url(endpoint)
         
         r = requests.get(call_url, params=call_params)
+
+        r.raise_for_status()  # HTTPError if 4XX or 5XX status code on response.
     
         response = mbta.response.MBTAPerformanceResponse(r.content)
         
