@@ -18,8 +18,14 @@ class Response:
         self.raw_response = json.loads(raw_response)
         self.data_as_of = dt.datetime.now()
         self.status_code = status_code
-        self.columns = {}
         self._set_data_type_data_list()
+
+        # In response type : (response columns) format
+        self.column_map = {'travel_times': ('arr_dt', 'benchmark_travel_time_sec',
+                                            'dep_dt', 'direction',
+                                            'route_id', 'travel_time_sec'
+                                            )
+                           }
 
     @staticmethod
     def _strip_first_layer_of_dict(data):
@@ -45,6 +51,16 @@ class Response:
         data_list = data[key]
 
         return data_list, key
+
+    @property
+    def columns(self):
+
+        """ columns
+        column names in order for the response.
+
+        """
+
+        return self.column_map[self.data_type]
 
     def _set_data_type_data_list(self):
 
@@ -114,14 +130,3 @@ class MBTAPerformanceResponse(Response):
     def __init__(self, raw_response, status_code):
 
         super().__init__(raw_response=raw_response, status_code=status_code)
-
-        # In response type : (response columns) format
-        self.columns = {'travel_times': ('arr_dt', 'benchmark_travel_time_sec',
-                                         'dep_dt', 'direction',
-                                         'route_id', 'travel_time_sec'
-                                         )
-                        }
-
-
-
-
