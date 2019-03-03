@@ -60,6 +60,28 @@ def date_to_epoch(date):
     return epoch
 
 
+def epoch_to_datetime(epoch):
+
+    """ _epoch_to_datetime
+
+    Converts an integer epoch timestamp into a datetime string.
+
+    INPUTS
+
+    epoch [int]: Integer timestamp to convert to a datetime string.
+
+
+    RETURNS
+
+    date [str]: Converted datetime string in YYYy-MM-DD HH:MM:SS format.
+
+    """
+
+    date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(epoch)))
+
+    return date
+
+
 def create_api_host_url(host, endpoints):
 
     """ create_api_host_url
