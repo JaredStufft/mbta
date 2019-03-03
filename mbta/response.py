@@ -12,10 +12,7 @@ class Response:
     """
 
     # In response type : (response columns) format
-    column_map = {'travel_times': ('arr_dt', 'dep_dt', 'travel_time_sec', 'benchmark_travel_time_sec', 'direction',
-                                   'route_id'
-                                   )
-                  }
+    column_map = dict()
 
     prettify_functions = dict()
     
@@ -144,6 +141,12 @@ class MBTAPerformanceResponse(Response):
     Response class for the MBTA Performance API call results
     
     """
+
+    # In response type : (response columns) format
+    column_map = {'travel_times': ('arr_dt', 'dep_dt', 'travel_time_sec', 'benchmark_travel_time_sec', 'direction',
+                                   'route_id'
+                                   )
+                  }
 
     prettify_functions = {
         'dep_dt': mbta.utils.epoch_to_datetime,
