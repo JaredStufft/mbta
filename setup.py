@@ -7,7 +7,7 @@ with open('README.md', 'r') as f:
 
 setuptools.setup(
     name='mbta',
-    version='0.0.5',
+    version='0.0.6',
     author='Jared Stufft',
     author_email='jared@stufft.us',
     description='A simple, high-level Python wrapper for the MBTA API',
