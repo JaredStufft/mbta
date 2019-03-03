@@ -1,4 +1,10 @@
-# -*- coding: utf-8 -*-
+"""
+filename: mbta/performance.py
+author: Jared Stufft, jared@stufft.us
+desc: Contains wrapper around the MBTA performance API. Allows a pythonic approach to retrieving historic performance
+data for MBTA travels.
+"""
+
 import requests
 import time
 import os
@@ -7,7 +13,7 @@ import mbta.response
 
 class MBTAPerformance:
     
-    host = 'http://realtime.mbta.com/developer/api/v2.1'
+    HOST = 'http://realtime.mbta.com/developer/api/v2.1'
     params = {'format': 'json'}
 
     def __init__(self, api_key=None):
@@ -84,7 +90,7 @@ class MBTAPerformance:
         
         """
         
-        api_url = '/'.join((self.host, endpoint))
+        api_url = '/'.join((self.HOST, endpoint))
         
         return api_url
 
