@@ -147,15 +147,28 @@ class MBTAPerformanceResponse(Response):
                                    'route_id'
                                    ),
 
-                  'dwell_times': ('arr_dt', 'dep_dt', 'dwell_time_sec', 'direction', 'route_id')
+                  'dwell_times': ('arr_dt', 'dep_dt', 'dwell_time_sec', 'direction', 'route_id'),
+                  'headways': ('current_dep_dt', 'previous_dep_dt', 'headway_time_sec', 'benchmark_headway_time_sec',
+                               'direction', 'route_id'
+                               ),
+                  'daily_metrics': ('service_date', 'threshold_name', 'threshold_type', 'threshold_id',
+                                    'time_period_type', 'metric_result', 'route_id'
+                                    )
                   }
 
     prettify_functions = {
         'dep_dt': mbta.utils.epoch_to_datetime,
         'arr_dt': mbta.utils.epoch_to_datetime,
+        'direction': int,
         'travel_time_sec': int,
         'benchmark_travel_time_sec': int,
-        'dwell_time_sec': int
+        'dwell_time_sec': int,
+        'current_dep_dt': mbta.utils.epoch_to_datetime,
+        'previous_dep_dt': mbta.utils.epoch_to_datetime,
+        'headway_time_sec': int,
+        'benchmark_headway_time_sec': int,
+        'service_date': mbta.utils.date_string_to_datetime,
+        'metric_result': float
     }
     
     def __init__(self, raw_response, status_code):

@@ -6,6 +6,7 @@ desc: Allows for access to some helper data and functions.
 
 import requests
 import os
+import datetime as dt
 from zipfile import ZipFile
 from io import BytesIO
 import time
@@ -73,13 +74,15 @@ def epoch_to_datetime(epoch):
 
     RETURNS
 
-    date [str]: Converted datetime string in YYYy-MM-DD HH:MM:SS format.
+    date [datetime]: Converted datetime in YYYy-MM-DD HH:MM:SS format.
 
     """
 
-    date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(epoch)))
+    return dt.datetime.strptime(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(epoch))), '%Y-%m-%d %H:%M:%S')
 
-    return date
+
+def date_string_to_datetime(date_string):
+    return dt.datetime.strptime(date_string, '%Y-%m-%d')
 
 
 def create_api_host_url(host, endpoints):

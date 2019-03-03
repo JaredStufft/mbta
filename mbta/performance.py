@@ -90,7 +90,7 @@ class MBTAPerformanceAPI:
 
         RETURNS
 
-        @response [MBTAPerformanceResponse]: Response from the travel times API endpoint
+        @response [MBTAPerformanceResponse]: Response from the dwell times API endpoint
 
         """
 
@@ -109,6 +109,92 @@ class MBTAPerformanceAPI:
         call_params = mbta.utils.merge_dicts(params, self.params)
 
         content, status_code = mbta.utils.make_api_call(self.HOST, ['dwells'], params=call_params)
+
+        response = mbta.response.MBTAPerformanceResponse(content, status_code)
+
+        return response
+
+    def get_headway_times(self, from_datetime, to_datetime, stop, to_stop=None, route=None):
+
+        """ get_headway_times
+
+        Retrieve headway time at a given station for a given date range
+
+        INPUTS
+
+        @from_datetime [str]: a string in YYYY-MM-DD format denoting the beginning of the time interval to search for.
+
+        @to_datetime [str]: a string in YYYY-MM-DD format denoting the end of the time interval to search for.
+
+        @stop [str]: The stop_id for the headway time. Can be found using `get_gtfs_utility_data`
+            function from mbta.utils with 'stops.txt' file.
+
+        @to_stop [str]: The stop_id for the end of the travel. Can be found using `get_gtfs_utility_data`
+            function from mbta.utils with 'stops.txt' file.
+
+        @route [str]: The route name for the travel. If not included, will return all travels between the stops.
+
+
+
+        RETURNS
+
+        @response [MBTAPerformanceResponse]: Response from the headways API endpoint
+
+        """
+
+        params = {
+            'from_datetime': mbta.utils.date_to_epoch(from_datetime),
+            'to_datetime': mbta.utils.date_to_epoch(to_datetime),
+            'stop': stop
+        }
+
+        if route:
+            params['route'] = route
+
+        if to_stop:
+            params['to_stop'] = to_stop
+
+        call_params = mbta.utils.merge_dicts(params, self.params)
+
+        content, status_code = mbta.utils.make_api_call(self.HOST, ['headways'], params=call_params)
+
+        response = mbta.response.MBTAPerformanceResponse(content, status_code)
+
+        return response
+
+    def get_daily_metrics(self, from_datetime, to_datetime, route=None):
+
+        """ get_daily_metrics
+
+        Retrieve daily performance metrics for a given date range
+
+        INPUTS
+
+        @from_datetime [str]: a string in YYYY-MM-DD format denoting the beginning of the time interval to search for.
+
+        @to_datetime [str]: a string in YYYY-MM-DD format denoting the end of the time interval to search for.
+
+        @route [str]: The route name for the travel. If not included, will return all travels between the stops.
+
+
+
+        RETURNS
+
+        @response [MBTAPerformanceResponse]: Response from the daily metrics API endpoint
+
+        """
+
+        params = {
+            'from_service_date': from_datetime,
+            'to_service_date': to_datetime
+        }
+
+        if route:
+            params['route'] = route
+
+        call_params = mbta.utils.merge_dicts(params, self.params)
+
+        content, status_code = mbta.utils.make_api_call(self.HOST, ['dailymetrics'], params=call_params)
 
         response = mbta.response.MBTAPerformanceResponse(content, status_code)
 
