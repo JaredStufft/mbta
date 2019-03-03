@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
-
 import json
 import datetime as dt
+import mbta.utils
 
 
 class Response:
@@ -11,6 +10,14 @@ class Response:
     Base class for responses from MBTA APIs
     
     """
+
+    # In response type : (response columns) format
+    column_map = {'travel_times': ('arr_dt', 'dep_dt', 'travel_time_sec', 'benchmark_travel_time_sec', 'direction',
+                                   'route_id'
+                                   )
+                  }
+
+    prettify_functions = dict()
     
     def __init__(self, raw_response, status_code):
         
@@ -18,13 +25,6 @@ class Response:
         self.data_as_of = dt.datetime.now()
         self.status_code = status_code
         self._set_data_type_data_list()
-
-        # In response type : (response columns) format
-        self.column_map = {'travel_times': ('arr_dt', 'benchmark_travel_time_sec',
-                                            'dep_dt', 'direction',
-                                            'route_id', 'travel_time_sec'
-                                            )
-                           }
 
     @staticmethod
     def _strip_first_layer_of_dict(data):
@@ -96,6 +96,46 @@ class Response:
 
         return tuples
 
+    @property
+    def pretty_tuples(self):
+
+        """ pretty_tuples
+
+        Data parsed into a list of tuples with prettify'd responses
+
+        """
+
+        tuples = []
+
+        for data_point in self.data_list:
+            # Sorts the each data point according to the column order in
+            # self.columns, converts first to a list, then a tuple for faster processing later.
+            tuple_ = tuple([self.prettify_response(key, data_point[key]) for key in self.columns])
+            tuples.append(tuple_)
+
+        return tuples
+
+    def prettify_response(self, column_name, data_point):
+
+        """ prettify_response
+
+        Converts individual data points into something prettier, such as converting epoch timestamps to datetimes.
+
+        INPUTS
+
+        @column_name [str]: The column name to convert. Used to find the correct rule.
+
+        @data_point [various]: The data point to convert.
+
+        """
+
+        transform_func = self.prettify_functions.get(column_name)
+
+        if transform_func:
+            return transform_func(data_point)
+
+        return data_point
+
 
 class MBTAPerformanceResponse(Response):
     
@@ -104,6 +144,13 @@ class MBTAPerformanceResponse(Response):
     Response class for the MBTA Performance API call results
     
     """
+
+    prettify_functions = {
+        'dep_dt': mbta.utils.epoch_to_datetime,
+        'arr_dt': mbta.utils.epoch_to_datetime,
+        'travel_time_sec': int,
+        'benchmark_travel_time_sec': int,
+    }
     
     def __init__(self, raw_response, status_code):
 
