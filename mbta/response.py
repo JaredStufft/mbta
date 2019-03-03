@@ -145,7 +145,9 @@ class MBTAPerformanceResponse(Response):
     # In response type : (response columns) format
     column_map = {'travel_times': ('arr_dt', 'dep_dt', 'travel_time_sec', 'benchmark_travel_time_sec', 'direction',
                                    'route_id'
-                                   )
+                                   ),
+
+                  'dwell_times': ('arr_dt', 'dep_dt', 'dwell_time_sec', 'direction', 'route_id')
                   }
 
     prettify_functions = {
