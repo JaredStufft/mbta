@@ -9,18 +9,18 @@ import mbta.response
 import mbta.utils
 
 
-class MBTAPerformance:
+class MBTAPerformanceAPI:
     
     HOST = 'http://realtime.mbta.com/developer/api/v2.1'
     DOCUMENTATION = 'https://cdn.mbta.com/sites/default/files/developers/2018-10-30-mbta-realtime-performance-api' \
                     '-documentation-version-0-9-5-public.pdf'
-    API_ENV_VARIABLE = 'MBTA_PERFORMANCE_API'
+    API_KEY_ENV_VARIABLE = 'MBTA_PERFORMANCE_API_KEY'
 
     def __init__(self, api_key=None):
 
         self.params = {
             'format': 'json',
-            'api_key': mbta.utils.authorize_api(api_key, self.API_ENV_VARIABLE)
+            'api_key': mbta.utils.authorize_api(api_key, self.API_KEY_ENV_VARIABLE)
         }
 
     def get_travel_times(self, from_datetime, to_datetime, from_stop, to_stop, route=None):
