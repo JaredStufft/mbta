@@ -155,6 +155,7 @@ class MBTAPerformanceResponse(Response):
         'arr_dt': mbta.utils.epoch_to_datetime,
         'travel_time_sec': int,
         'benchmark_travel_time_sec': int,
+        'dwell_time_sec': int
     }
     
     def __init__(self, raw_response, status_code):
