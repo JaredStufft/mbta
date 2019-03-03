@@ -2,7 +2,6 @@
 
 import json
 import datetime as dt
-import time
 
 
 class Response:
@@ -79,6 +78,7 @@ class Response:
 
     @property
     def tuples(self):
+
         """ tuples
 
         Data parsed into a list of tuples
@@ -91,32 +91,10 @@ class Response:
 
             # Sorts the each data point according to the column order in
             # self.columns, converts first to a list, then a tuple for faster processing later.
-            tuple_ = tuple([data_point[key] for key in self.columns[self.data_type]])
+            tuple_ = tuple([data_point[key] for key in self.columns])
             tuples.append(tuple_)
 
         return tuples
-
-    @staticmethod
-    def _epoch_to_datetime(epoch):
-
-        """ _epoch_to_datetime
-
-        Converts an integer epoch timestamp into a datetime string.
-
-        INPUTS
-
-        epoch [int]: Integer timestamp to convert to a datetime string.
-
-
-        RETURNS
-
-        date [str]: Converted datetime string in YYYy-MM-DD HH:MM:SS format.
-
-        """
-
-        date = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(epoch)))
-
-        return date
 
 
 class MBTAPerformanceResponse(Response):
