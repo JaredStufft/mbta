@@ -41,7 +41,7 @@ class MBTAPerformanceAPI:
         @to_stop [str]: The stop_id for the end of the travel. Can be found using `get_gtfs_utility_data`
             function from mbta.utils with 'stops.txt' file.
 
-        @route [str]: The route name for the travel. If not included, will
+        @route [str]: The route name for the travel. If not included, will return all travels between the stops.
         
         
         RETURNS
@@ -66,4 +66,50 @@ class MBTAPerformanceAPI:
 
         response = mbta.response.MBTAPerformanceResponse(content, status_code)
         
+        return response
+
+    def get_dwell_times(self, from_datetime, to_datetime, stop, route=None, direction=None):
+
+        """ get_dwell_times
+
+        Retrieve dwell time at a given station for a given date range
+
+        INPUTS
+
+        @from_datetime [str]: a string in YYYY-MM-DD format denoting the beginning of the time interval to search for.
+
+        @to_datetime [str]: a string in YYYY-MM-DD format denoting the end of the time interval to search for.
+
+        @stop [str]: The stop_id for the dwell time. Can be found using `get_gtfs_utility_data`
+            function from mbta.utils with 'stops.txt' file.
+
+        @route [str]: The route name for the travel. If not included, will return all travels between the stops.
+
+        @direction [str]: The direction of travel during which the vehicle stopped.
+
+
+        RETURNS
+
+        @response [MBTAPerformanceResponse]: Response from the travel times API endpoint
+
+        """
+
+        params = {
+            'from_datetime': mbta.utils.date_to_epoch(from_datetime),
+            'to_datetime': mbta.utils.date_to_epoch(to_datetime),
+            'stop': stop
+        }
+
+        if route:
+            params['route'] = route
+
+        if direction:
+            params['direction'] = direction
+
+        call_params = mbta.utils.merge_dicts(params, self.params)
+
+        content, status_code = mbta.utils.make_api_call(self.HOST, ['dwells'], params=call_params)
+
+        response = mbta.response.MBTAPerformanceResponse(content, status_code)
+
         return response
