@@ -5,151 +5,25 @@ desc: Contains wrapper around the MBTA performance API. Allows a pythonic approa
 data for MBTA travels.
 """
 
-import requests
-import time
-import os
 import mbta.response
+import mbta.utils
 
 
 class MBTAPerformance:
     
     HOST = 'http://realtime.mbta.com/developer/api/v2.1'
-    params = {'format': 'json'}
+    DOCUMENTATION = 'https://cdn.mbta.com/sites/default/files/developers/2018-10-30-mbta-realtime-performance-api' \
+                    '-documentation-version-0-9-5-public.pdf'
+    API_ENV_VARIABLE = 'MBTA_PERFORMANCE_API'
 
     def __init__(self, api_key=None):
-        
-        self.params['api_key'] = self.authorize_api(api_key)
 
-    @staticmethod
-    def authorize_api(api_key):
+        self.params = {
+            'format': 'json',
+            'api_key': mbta.utils.authorize_api(api_key, self.API_ENV_VARIABLE)
+        }
 
-        """ authorize_api
-
-        Checks if the user provided an API key during class instance
-        creation. If none found, searches for environment variable
-        `MBTA_PERFORMANCE_API_KEY`.
-
-        INPUTS
-
-        @api_key [str]: Key for MBTA Performance API, to be received
-        from the class instance created if used.
-
-
-        RETURNS
-
-        @valid_api_key [str]: The proper API key for the performance API.
-
-        """
-
-        if not api_key:
-
-            valid_api_key = os.getenv('MBTA_PERFORMANCE_API_KEY')
-
-            return valid_api_key
-
-        valid_api_key = api_key
-
-        return valid_api_key
-
-    @staticmethod
-    def _date_to_epoch(date):
-        
-        """ date_to_epoch
-        
-        Takes a string in format YYYY-MM-DD and converts to epoch time
-        
-        INPUTS
-        
-        @date [str]: Date string in format YYYY-MM-DD
-        
-        
-        RETURNS
-        
-        @epoch [int]: Integer value representing date in epoch format
-        
-        """
-        
-        epoch = int(time.mktime(time.strptime(date, '%Y-%m-%d')))
-        
-        return epoch
-
-    def _create_api_host_url(self, endpoint):
-        
-        """ _create_api_host_url
-        
-        Creates the endpoint url for the API call.
-        
-        INPUTS
-        
-        @endpoint [str]: The API endpoint name for the chosen method
-        
-        
-        RETURNS
-        
-        @api_url [str]: The full endpoint url for the method.
-        
-        """
-        
-        api_url = '/'.join((self.HOST, endpoint))
-        
-        return api_url
-
-    @staticmethod
-    def _merge_dicts(dict1, dict2):
-        
-        """ _merge_dicts
-        
-        Merges two dictionaries into one.
-        
-        INPUTS
-        
-        @dict1 [dict]: First dictionary to merge.
-        
-        @dict2 [dict]: Second dictionary to merge.
-        
-        
-        RETURNS
-        
-        @merged [dict]: Merged dictionary
-        
-        """
-        
-        merged = {**dict1, **dict2}
-        
-        return merged
-
-    def _make_api_call(self, endpoint, params):
-        
-        """ _make_api_call
-        
-        Base method for any API call.
-        
-        INPUTS
-        
-        @params [dict]: dictionary of API call parameters
-        
-        @endpoint [str]: the API method being used
-        
-        
-        RETURNS
-        
-        @response [Response]: The response for the API call
-        
-        """
-        
-        call_params = self._merge_dicts(self.params, params)
-        
-        call_url = self._create_api_host_url(endpoint)
-        
-        r = requests.get(call_url, params=call_params)
-
-        r.raise_for_status()  # HTTPError if 4XX or 5XX status code on response.
-    
-        response = mbta.response.MBTAPerformanceResponse(r.content, r.status_code)
-        
-        return response
-
-    def get_travel_times(self, from_datetime, to_datetime, from_stop, to_stop):
+    def get_travel_times(self, from_datetime, to_datetime, from_stop, to_stop, route=None):
         
         """ get_travel_times
         
@@ -157,13 +31,17 @@ class MBTAPerformance:
         
         INPUTS
         
-        @from_datetime [str]:
+        @from_datetime [str]: a string in YYYY-MM-DD format denoting the beginning of the time interval to search for.
 
-        @to_datetime [str]:
+        @to_datetime [str]: a string in YYYY-MM-DD format denoting the end of the time interval to search for.
 
-        @from_stop [str]:
+        @from_stop [str]: The stop_id for the beginning of the travel. Can be found using `get_gtfs_utility_data`
+            function from mbta.utils with 'stops.txt' file.
 
-        @to_stop [str]:
+        @to_stop [str]: The stop_id for the end of the travel. Can be found using `get_gtfs_utility_data`
+            function from mbta.utils with 'stops.txt' file.
+
+        @route [str]: The route name for the travel. If not included, will
         
         
         RETURNS
@@ -173,12 +51,19 @@ class MBTAPerformance:
         """
 
         params = {
-            'from_datetime': self._date_to_epoch(from_datetime),
-            'to_datetime': self._date_to_epoch(to_datetime),
+            'from_datetime': mbta.utils.date_to_epoch(from_datetime),
+            'to_datetime': mbta.utils.date_to_epoch(to_datetime),
             'from_stop': from_stop,
             'to_stop': to_stop
         }
 
-        response = self._make_api_call('traveltimes', params=params)
+        if route:
+            params['route'] = route
+
+        call_params = mbta.utils.merge_dicts(params, self.params)
+
+        content, status_code = mbta.utils.make_api_call(self.HOST, ['traveltimes'], params=call_params)
+
+        response = mbta.response.MBTAPerformanceResponse(content, status_code)
         
         return response
