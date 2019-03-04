@@ -88,7 +88,7 @@ class Response:
 
             # Sorts the each data point according to the column order in
             # self.columns, converts first to a list, then a tuple for faster processing later.
-            tuple_ = tuple([data_point[key] for key in self.columns])
+            tuple_ = tuple([data_point.get(key) for key in self.columns])
             tuples.append(tuple_)
 
         return tuples
@@ -107,7 +107,8 @@ class Response:
         for data_point in self.data_list:
             # Sorts the each data point according to the column order in
             # self.columns, converts first to a list, then a tuple for faster processing later.
-            tuple_ = tuple([self.prettify_response(key, data_point[key]) for key in self.columns])
+            tuple_ = tuple([(self.prettify_response(key, data_point.get(key)) if data_point.get(key)
+                             else None) for key in self.columns])
             tuples.append(tuple_)
 
         return tuples
@@ -167,7 +168,12 @@ class MBTAPerformanceResponse(Response):
                                          ),
                   'events': ('service_date', 'stop_name', 'stop_id', 'vehicle_id', 'vehicle_label', 'event_type',
                              'event_time', 'event_time_sec', 'direction_id', 'trip_id', 'route_id'
-                             )
+                             ),
+
+                  'past_alerts': ('alert_id', 'alert_versions', 'version_id', 'valid_from', 'valid_to', 'cause',
+                                  'effect', 'header_text', 'description_text', 'informed_entity', 'url', 'agency_id',
+                                  'route_id', 'route_type', 'trip_id', 'stop_id', 'active_period', 'start', 'end'
+                                  )
                   }
 
     prettify_functions = {
@@ -190,7 +196,12 @@ class MBTAPerformanceResponse(Response):
         'total_predictions_within_threshold': int,
         'total_predictions_in_bin': int,
         'event_time': mbta.utils.epoch_to_datetime,
-        'event_time_sec': int
+        'event_time_sec': int,
+        'active_period': mbta.utils.epoch_to_datetime,
+        'start': mbta.utils.epoch_to_datetime,
+        'end': mbta.utils.epoch_to_datetime,
+        'valid_from': mbta.utils.epoch_to_datetime,
+        'valid_to': mbta.utils.epoch_to_datetime
     }
     
     def __init__(self, raw_response, status_code):

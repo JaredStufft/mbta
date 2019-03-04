@@ -365,5 +365,53 @@ class MBTAPerformanceAPI:
 
         return response
 
-    def get_past_alerts(self):
-        pass
+    # TODO: Add this back in when there's time to parse the response.
+    # def get_past_alerts(self, from_datetime, to_datetime, trip=None, stop=None, route=None):
+    #
+    #     """ get_past_alerts
+    #
+    #     This query returns a list of arrival and departure events during the time period defined in the call.
+    #
+    #     INPUTS
+    #
+    #     @vehicle_label [str]: human-readable, publicly visible identifier for the vehicle
+    #
+    #     @from_datetime [str]: a string in YYYY-MM-DD format denoting the beginning of the time interval to search for.
+    #
+    #     @to_datetime [str]: a string in YYYY-MM-DD format denoting the end of the time interval to search for.
+    #
+    #     @stop [str]: The stop_id for the dwell time. Can be found using `get_gtfs_utility_data`
+    #         function from mbta.utils with 'stops.txt' file.
+    #
+    #     @route [str]: The route name for the travel. If not included, will return all travels between the stops.
+    #
+    #     @trip [str]: trip_id value for which alerts should be returned.
+    #
+    #
+    #     RETURNS
+    #
+    #     @response [MBTAPerformanceResponse]: Response from the daily metrics API endpoint
+    #
+    #     """
+    #
+    #     params = {
+    #         'from_datetime': mbta.utils.date_to_epoch(from_datetime),
+    #         'to_datetime': mbta.utils.date_to_epoch(to_datetime)
+    #     }
+    #
+    #     if trip:
+    #         params['trip'] = trip
+    #
+    #     if route:
+    #         params['route'] = route
+    #
+    #     if stop:
+    #         params['stop'] = stop
+    #
+    #     call_params = mbta.utils.merge_dicts(params, self.params)
+    #
+    #     content, status_code = mbta.utils.make_api_call(self.HOST, ['pastalerts'], params=call_params)
+    #
+    #     response = mbta.response.MBTAPerformanceResponse(content, status_code)
+    #
+    #     return response
