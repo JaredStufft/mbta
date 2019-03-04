@@ -153,7 +153,21 @@ class MBTAPerformanceResponse(Response):
                                ),
                   'daily_metrics': ('service_date', 'threshold_name', 'threshold_type', 'threshold_id',
                                     'time_period_type', 'metric_result', 'route_id'
-                                    )
+                                    ),
+                  'current_metrics': ('threshold_name', 'threshold_type', 'threshold_id', 'metric_result_last_hour',
+                                      'metric_result_current_day', 'route_id'
+                                      ),
+                  'daily_prediction_metrics': ('service_date', 'threshold_name', 'threshold_type', 'threshold_id',
+                                               'metric_result', 'route_id'
+                                               ),
+                  'prediction_metrics': ('service_date', 'threshold_name', 'threshold_type', 'threshold_id',
+                                         'time_slice_start_sec', 'time_slice_end_sec', 'metric_result',
+                                         'total_predictions_within_threshold', 'total_predictions_in_bin',
+                                         'stop_id', 'direction_id', 'route_id'
+                                         ),
+                  'events': ('service_date', 'stop_name', 'stop_id', 'vehicle_id', 'vehicle_label', 'event_type',
+                             'event_time', 'event_time_sec', 'direction_id', 'trip_id', 'route_id'
+                             )
                   }
 
     prettify_functions = {
@@ -168,7 +182,15 @@ class MBTAPerformanceResponse(Response):
         'headway_time_sec': int,
         'benchmark_headway_time_sec': int,
         'service_date': mbta.utils.date_string_to_datetime,
-        'metric_result': float
+        'metric_result': float,
+        'metric_result_last_hour': float,
+        'metric_result_current_day': float,
+        'time_slice_start_sec': mbta.utils.epoch_to_datetime,
+        'time_slice_end_sec': mbta.utils.epoch_to_datetime,
+        'total_predictions_within_threshold': int,
+        'total_predictions_in_bin': int,
+        'event_time': mbta.utils.epoch_to_datetime,
+        'event_time_sec': int
     }
     
     def __init__(self, raw_response, status_code):
